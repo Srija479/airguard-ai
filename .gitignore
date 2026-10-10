@@ -1,0 +1,9 @@
+node_modules/
+venv/
+.env
+*.db
+uploads/
+dist/
+backend/models/
+backend/uploads/
+backend/.env

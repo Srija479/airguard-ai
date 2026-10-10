@@ -1,0 +1,30 @@
+@import '@fontsource/noto-sans-devanagari/400.css';
+@import '@fontsource/noto-sans-devanagari/700.css';
+@import '@fontsource/noto-sans-telugu/400.css';
+@import '@fontsource/noto-sans-telugu/700.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-blue: #1557a0;
+  --color-teal-accent: #087e74;
+  --color-aqi-good: #166534;
+  --color-aqi-satisfactory: #4d6800;
+  --color-aqi-moderate: #8a5b00;
+  --color-aqi-poor: #b93815;
+  --color-aqi-very-poor: #a32245;
+  --color-aqi-severe: #7f1d1d;
+}
+
+html:lang(hi) {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+html:lang(te) {
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}

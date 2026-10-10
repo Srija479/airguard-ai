@@ -1,0 +1,407 @@
+{
+  "app": {
+    "name": "AirGuard AI"
+  },
+  "nav": {
+    "home": "Home",
+    "forecast": "Forecast",
+    "map": "Map",
+    "report": "Report"
+  },
+  "pages": {
+    "home": {
+      "title": "Air quality now"
+    },
+    "forecast": {
+      "title": "Forecast"
+    },
+    "map": {
+      "title": "Pollution map"
+    },
+    "report": {
+      "title": "Report pollution"
+    }
+  },
+  "forecast": {
+    "preparing": "Preparing the forecast for {{city}}, about a minute",
+    "unavailable": "A forecast is not available for this city yet.",
+    "notMeasurement": "Forecast, not a measurement",
+    "highSummary": "Air is expected to be {{category}} from {{start}} to {{end}}",
+    "steadySummary": "Air should stay {{category}} for the next 24 hours",
+    "timelineLabel": "48-hour forecast timeline",
+    "timelineDetail": "{{time}}: {{category}} (average AQI {{aqi}})",
+    "bestWindow": "Best 2-hour window",
+    "worstWindow": "Worst 2-hour window",
+    "chartLabel": "Observed and forecast AQI",
+    "observedLegend": "Past 24 hours",
+    "aiLegend": "AirGuard AI forecast",
+    "atmosphericLegend": "Atmospheric model forecast",
+    "reliabilityTitle": "How reliable is this?",
+    "errorComparison": "On the test period ({{start}} to {{end}}), the average error was {{model}} AQI points for our model versus {{baseline}} points when assuming same as now.",
+    "doesNotBeat": "Our model does not beat the simple same-as-now baseline.",
+    "reliabilityNote": "It learns from modelled data for this city. Forecasts further ahead are less certain."
+  },
+  "alerts": {
+    "highAqiTitle": "High air pollution now",
+    "highAqiMessage": "Air is {{category}} in {{place}} now (AQI {{value}}).",
+    "highAqiAction": "Limit time outdoors and follow your usual precautions.",
+    "forecastTitle": "High pollution forecast",
+    "forecastMessage": "The forecast expects {{category}} air in {{place}} within the next 24 hours (AQI {{value}}).",
+    "forecastAction": "Open the forecast to check the expected hours.",
+    "reportUpdateTitle": "Your report was updated",
+    "reportUpdateMessage": "A report near {{place}} is now {{status}}.",
+    "reportUpdateAction": "Open My reports to see the status history.",
+    "sourceModelled": "Modelled estimate",
+    "sourceForecast": "Forecast",
+    "sourceReport": "Citizen report update",
+    "markAllRead": "Mark all as read",
+    "clear": "Clear",
+    "empty": "No alerts right now.",
+    "unreadCount": "{{count}} unread alerts"
+  },
+  "routes": {
+    "from": "From",
+    "to": "To",
+    "findRoutes": "Find routes",
+    "searchingRoutes": "Checking routes...",
+    "serviceError": "The demo routing service could not provide routes. Try again later.",
+    "empty": "Choose two places to compare routes.",
+    "durationNote": "Duration is a typical estimate. Traffic is not live.",
+    "smallDifference": "The difference is small.",
+    "coarseDataNote": "Air data is a coarse modelled estimate (about city level), so small differences between routes are not reliable.",
+    "routeNumber": "Route {{number}}",
+    "lowerExposure": "Lower exposure route",
+    "bestReason": "Lower modelled average AQI along this route ({{value}}).",
+    "level": {
+      "low": "Low exposure",
+      "medium": "Medium exposure",
+      "high": "High exposure",
+      "unavailable": "Exposure unavailable"
+    }
+  },
+  "officer": {
+    "title": "Officer review",
+    "username": "Username",
+    "password": "Password",
+    "login": "Sign in",
+    "loginFailed": "Sign-in failed. Check the credentials or officer configuration.",
+    "logout": "Sign out",
+    "statusCounts": "Reports by review status",
+    "reports": "Reports",
+    "category": "Category",
+    "allCategories": "All categories",
+    "reviewStatus": "Review status",
+    "allStatuses": "All statuses",
+    "activity": "Activity",
+    "allActivity": "All activity",
+    "activeOnly": "Active only",
+    "inactiveOnly": "Inactive only",
+    "city": "City or area",
+    "titleColumn": "Report",
+    "date": "Date",
+    "noReports": "No reports match these filters.",
+    "loadFailed": "Reports could not be loaded.",
+    "details": "Report details",
+    "activityStatus": "Activity status",
+    "noDescription": "No description provided.",
+    "reportPhoto": "Citizen report photo",
+    "selectReport": "Select a report to review.",
+    "newStatus": "New review status",
+    "noteRequired": "Required note",
+    "updateFailed": "The status could not be updated.",
+    "saveStatus": "Save status",
+    "count": {
+      "submitted": "Waiting",
+      "under_review": "Being reviewed",
+      "action_planned": "Action planned",
+      "resolved": "Resolved"
+    }
+  },
+  "common": {
+    "retry": "Retry",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "notifications": "Notifications",
+    "language": "Language",
+    "modelledUpdated": "Modelled estimate - updated {{time}}",
+    "staleData": "Showing last saved data from {{time}}"
+  },
+  "health": {
+    "connected": "Backend connected",
+    "failed": "Cannot reach the server"
+  },
+  "footer": {
+    "attribution": "Air quality data: Open-Meteo (modelled estimate)",
+    "officerLogin": "Officer login"
+  },
+  "aqi": {
+    "good": "Good",
+    "satisfactory": "Satisfactory",
+    "moderate": "Moderate",
+    "poor": "Poor",
+    "veryPoor": "Very Poor",
+    "severe": "Severe",
+    "unavailable": "AQI is unavailable because particulate data is missing.",
+    "scaleLabel": "AQI scale from Good to Severe"
+  },
+  "citySearch": {
+    "label": "Search for a city",
+    "placeholder": "Enter at least 2 characters",
+    "searching": "Searching...",
+    "noResults": "No places found.",
+    "searchFailed": "Could not search places. Choose a quick-pick city or try again.",
+    "quickPicks": "Quick-pick cities",
+    "useMyLocation": "Use my location",
+    "locating": "Finding your location...",
+    "locationDenied": "Location permission was denied. Search for a place or choose a city.",
+    "locationUnavailable": "Could not get your location. Search for a place or choose a city."
+  },
+  "cities": {
+    "delhi": "Delhi",
+    "mumbai": "Mumbai",
+    "bengaluru": "Bengaluru",
+    "hyderabad": "Hyderabad",
+    "chennai": "Chennai",
+    "kolkata": "Kolkata",
+    "pune": "Pune",
+    "ahmedabad": "Ahmedabad",
+    "currentLocation": "Your location"
+  },
+  "pollutants": {
+    "pm2_5": "Fine dust and smoke",
+    "pm10": "Coarse dust",
+    "nitrogen_dioxide": "Vehicle fumes",
+    "ozone": "Smog gas",
+    "sulphur_dioxide": "Industrial gas",
+    "carbon_monoxide": "Exhaust gas"
+  },
+  "advice": {
+    "good": "Air is good. Outdoor activities can continue as usual.",
+    "satisfactory": "Air quality is satisfactory. Sensitive groups may prefer shorter outdoor activity.",
+    "moderate": "Air is moderate. Consider limiting long periods of outdoor activity.",
+    "poor": "Air is poor. Avoid outdoor exercise today.",
+    "veryPoor": "Air is very poor. Limit time outdoors and keep windows closed when practical.",
+    "severe": "Air quality is severe. Avoid outdoor activity and keep doors and windows closed."
+  },
+  "profileSelector": {
+    "label": "Advice for",
+    "general": "Everyone",
+    "child": "Children",
+    "asthma": "Asthma",
+    "elderly": "Older adults",
+    "runner": "Runners"
+  },
+  "profileAdvice": {
+    "general": {
+      "good": "Air is good. Outdoor activities can continue as usual.",
+      "satisfactory": "Air quality is satisfactory. Sensitive groups may prefer shorter outdoor activity.",
+      "moderate": "Air is moderate. Consider limiting long periods of outdoor activity.",
+      "poor": "Air is poor. Avoid outdoor exercise today.",
+      "veryPoor": "Air is very poor. Limit time outdoors and keep windows closed when practical.",
+      "severe": "Air quality is severe. Avoid outdoor activity and keep doors and windows closed."
+    },
+    "child": {
+      "good": "Children can play outdoors as usual.",
+      "satisfactory": "Keep children's outdoor play shorter.",
+      "moderate": "Limit children's time playing outdoors.",
+      "poor": "Avoid outdoor exercise for children today.",
+      "veryPoor": "Keep children indoors as much as practical.",
+      "severe": "Keep children indoors and windows closed where possible."
+    },
+    "asthma": {
+      "good": "Air is good; follow your usual outdoor routine.",
+      "satisfactory": "Consider shorter outdoor periods if air affects you.",
+      "moderate": "Limit long or strenuous outdoor activity if air affects you.",
+      "poor": "Avoid outdoor exercise and follow your usual air-quality precautions.",
+      "veryPoor": "Spend as little time outdoors as practical and follow your usual precautions.",
+      "severe": "Avoid outdoor activity and follow your usual local air-quality guidance."
+    },
+    "elderly": {
+      "good": "Older adults can continue usual outdoor activities.",
+      "satisfactory": "Older adults may prefer shorter outdoor outings.",
+      "moderate": "Limit long outdoor periods, especially near busy roads.",
+      "poor": "Older adults should avoid outdoor exercise today.",
+      "veryPoor": "Stay indoors as much as practical and keep windows closed when possible.",
+      "severe": "Avoid outdoor activity and keep doors and windows closed."
+    },
+    "runner": {
+      "good": "Outdoor running can continue as usual.",
+      "satisfactory": "Consider a shorter outdoor run.",
+      "moderate": "Shorten or reduce the effort of outdoor training.",
+      "poor": "Avoid outdoor running today.",
+      "veryPoor": "Move training indoors if possible.",
+      "severe": "Avoid outdoor training today."
+    }
+  },
+  "technicalPollutants": {
+    "pm2_5": "PM2.5",
+    "pm10": "PM10",
+    "nitrogen_dioxide": "NO₂",
+    "ozone": "O₃",
+    "sulphur_dioxide": "SO₂",
+    "carbon_monoxide": "CO"
+  },
+  "details": {
+    "title": "More details",
+    "mainCause": "Main cause today: {{pollutant}}",
+    "measurementNote": "Some measurements are not available for this area.",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "exactValue": "{{name}}: {{value}} µg/m³",
+    "historyUnavailable": "Hourly AQI history is unavailable.",
+    "retryHistory": "Retry chart",
+    "chartLabel": "AQI over the last 24 hours",
+    "aqiValue": "AQI {{value}}",
+    "betterSinceMorning": "Air has been getting better since morning.",
+    "worseSinceMorning": "Air has been getting worse since morning.",
+    "sameSinceMorning": "Air has stayed about the same since morning."
+  },
+  "bestTime": {
+    "message": "Earlier today the air was cleanest around {{time}}.",
+    "basedOnToday": "Based on today's pattern."
+  },
+  "reportForm": {
+    "stepOne": "Category",
+    "stepTwo": "Location",
+    "stepThree": "Details",
+    "newReportTab": "New report",
+    "myReportsTab": "My reports",
+    "progress": "Report progress",
+    "categoryPrompt": "What are you observing?",
+    "tipsTitle": "What to note",
+    "locationTitle": "Where is it happening?",
+    "useMyLocation": "Use my location",
+    "locating": "Finding your location...",
+    "locationDenied": "Location access was denied. You can choose a place on the map or enter an area name.",
+    "locationUnavailable": "Could not get your location. Choose a place on the map or enter an area name.",
+    "mapPrompt": "Tap the map to set the report location",
+    "areaName": "Area name",
+    "areaPlaceholder": "Enter a neighbourhood or landmark",
+    "continue": "Continue",
+    "back": "Back",
+    "statusTitle": "What is happening there?",
+    "photos": "Photos",
+    "photoPreview": "Report photo {{index}}",
+    "photoHelp": "Choose up to 3 JPEG, PNG, or WebP photos, up to 5 MB each.",
+    "title": "Short title",
+    "titlePlaceholder": "Describe the issue briefly",
+    "description": "Description",
+    "descriptionPlaceholder": "Add useful details (optional)",
+    "safety": "Do not approach fires or dangerous sites. Avoid photographing faces or number plates.",
+    "submit": "Submit report",
+    "submitting": "Submitting...",
+    "submitFailed": "The report could not be submitted. Please try again.",
+    "success": "Report submitted",
+    "successMessage": "Report sent. It now appears on the map.",
+    "seeOnMap": "See it on the map",
+    "savedOnDevice": "Your reports are saved on this device.",
+    "emptyReports": "You have not reported anything on this device yet.",
+    "reportNow": "Report an issue",
+    "loadReportsFailed": "Your reports could not be loaded. Please try again.",
+    "reportedByYou": "Reported by you",
+    "review": {
+      "submitted": "Waiting for review",
+      "under_review": "Being reviewed",
+      "action_planned": "Action planned",
+      "resolved": "Resolved",
+      "rejected": "Rejected"
+    },
+    "reportCode": "Report code",
+    "copyCode": "Copy code",
+    "copied": "Copied",
+    "trackReport": "Track my report",
+    "staysInLanguage": "Reports stay in the language you wrote them in.",
+    "unverified": "Unverified",
+    "photoCountError": "Choose no more than 3 photos.",
+    "photoSizeError": "Each photo must be 5 MB or smaller.",
+    "photoTypeError": "Photos must be JPEG, PNG, or WebP.",
+    "validationCategory": "Choose a category.",
+    "validationStatus": "Choose an activity status.",
+    "validationTitle": "Enter a title from 3 to 100 characters.",
+    "validationPlace": "Enter an area name.",
+    "validationCoordinates": "Choose a point on the map or use your location."
+  },
+  "reportCategories": {
+    "construction_dust": "Construction dust",
+    "waste_burning": "Waste burning",
+    "waste_dumping": "Waste dumping",
+    "traffic": "Traffic",
+    "industrial_smoke": "Industrial smoke",
+    "road_dust": "Road dust",
+    "other": "Other"
+  },
+  "categoryTips": {
+    "construction_dust": ["Note nearby construction activity.", "Describe when dust is most visible.", "Keep a safe distance from the site."],
+    "waste_burning": ["Note whether flames or smoke are visible.", "Describe the nearby area.", "Do not approach the fire."],
+    "waste_dumping": ["Describe the waste and its location.", "Note whether collection has started.", "Do not touch hazardous waste."],
+    "traffic": ["Describe where traffic builds up.", "Note whether it happens repeatedly.", "Stay clear of moving traffic."],
+    "industrial_smoke": ["Describe visible smoke and the nearby area.", "Note whether it is continuous or recurring.", "Do not enter restricted areas."],
+    "road_dust": ["Describe the road or repair activity.", "Note when dust is most visible.", "Stay clear of road works."],
+    "other": ["Describe what you observed.", "Add a nearby landmark.", "Keep a safe distance."]
+  },
+  "activityStatuses": {
+    "ongoing": "Ongoing",
+    "paused": "Paused",
+    "completed": "Completed",
+    "not_sure": "Not sure",
+    "burning_now": "Burning now",
+    "fire_out": "Fire is out",
+    "ash_remaining": "Ash remains",
+    "uncollected": "Not collected",
+    "collection_in_progress": "Collection in progress",
+    "cleared": "Cleared",
+    "heavy_jam": "Heavy traffic jam",
+    "recurring": "Recurring",
+    "emitting_now": "Emitting now",
+    "stopped": "Stopped",
+    "dust_visible": "Dust visible",
+    "road_repair": "Road repair ongoing",
+    "fixed": "Fixed",
+    "happening_now": "Happening now"
+  },
+  "reviewStatuses": {
+    "submitted": "Submitted",
+    "under_review": "Under review",
+    "action_planned": "Action planned",
+    "resolved": "Resolved",
+    "rejected": "Rejected"
+  },
+  "tracking": {
+    "title": "Track a report",
+    "codeLabel": "Report code",
+    "codePlaceholder": "Enter your report code",
+    "find": "Find report",
+    "notFound": "No report was found with that code. Check it and try again.",
+    "loadFailed": "The report could not be loaded. Please try again.",
+    "category": "Category",
+    "place": "Place",
+    "date": "Reported on",
+    "reportedStatus": "Activity status (reported by citizen)",
+    "authorityStatus": "Review status (set by authorities)",
+    "history": "Status history",
+    "noHistory": "No status updates yet.",
+    "photos": "Photos",
+    "backToReport": "Report an issue"
+  },
+  "map": {
+    "airMapTab": "Air map",
+    "routesTab": "Routes",
+    "routesComingSoon": "Route planning will be available here.",
+    "all": "All",
+    "activeOnly": "Active only",
+    "empty": "No reports here yet. Be the first to report.",
+    "reportLink": "Report an issue",
+    "aqiPopup": "Air quality index {{value}}",
+    "reportPopup": "Citizen report",
+    "date": "Reported on {{date}}",
+    "firstPhoto": "Report photo",
+    "photoUnavailable": "This photo could not be loaded.",
+    "recentReports": "Recent reports",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} hr ago",
+    "daysAgo": "{{count}} d ago",
+    "mapAttribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+    "selectedLocation": "Selected location"
+  }
+}
