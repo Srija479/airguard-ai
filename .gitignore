@@ -7,3 +7,6 @@ dist/
 backend/models/
 backend/uploads/
 backend/.env
+
+__pycache__/
+*.pyc
