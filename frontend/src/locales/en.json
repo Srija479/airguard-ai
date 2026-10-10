@@ -41,6 +41,34 @@
     "doesNotBeat": "Our model does not beat the simple same-as-now baseline.",
     "reliabilityNote": "It learns from modelled data for this city. Forecasts further ahead are less certain."
   },
+  "forecastPage": {
+    "notMeasurement": "Forecast, not a measurement",
+    "answerLabel": "Best and worst times to go out",
+    "bestAnswer": "Best time to go out: {{window}}",
+    "avoidAnswer": "Better to avoid: {{window}} ({{category}} expected in the next 24 hours)",
+    "notAvailable": "Not available",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "daysLabel": "Air quality by time of day",
+    "periods": {
+      "morning": "Morning (6 AM-12 PM)",
+      "afternoon": "Afternoon (12-6 PM)",
+      "evening": "Evening (6 PM-12 AM)",
+      "night": "Night (12-6 AM)"
+    },
+    "averageAqi": "Avg AQI {{value}}",
+    "chartLabel": "Past and forecast AQI",
+    "observedLegend": "Past 24 hours",
+    "aiLegend": "AirGuard AI forecast",
+    "chartCaption": "Solid line: today so far. Dashed line: forecast.",
+    "reliabilityTitle": "How reliable is this?",
+    "typicalError": "Our forecast is usually off by about {{value}} AQI points.",
+    "comparisons": "Compared with {{baseline}} AQI points when assuming the air stays the same as now. Atmospheric-model MAE: {{atmospheric}}.",
+    "atmosphericUnavailable": "not available in the evaluation data",
+    "testPeriod": "Test period: {{start}} to {{end}}.",
+    "doesNotBeat": "Our model does not beat the simple baselines.",
+    "evaluationUnavailable": "Evaluation results are not available right now."
+  },
   "alerts": {
     "highAqiTitle": "High air pollution now",
     "highAqiMessage": "Air is {{category}} in {{place}} now (AQI {{value}}).",

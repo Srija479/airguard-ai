@@ -50,6 +50,34 @@
     "doesNotBeat": "ఇప్పటి స్థితి మారదనే సరళ అంచనాను మా నమూనా మించలేదు.",
     "reliabilityNote": "ఈ నగరానికి నమూనా రూపొందించిన డేటాతో ఇది నేర్చుకుంటుంది. మరింత ముందున్న అంచనాలు తక్కువ నిశ్చితమైనవి."
   },
+  "forecastPage": {
+    "notMeasurement": "అంచనా మాత్రమే, కొలత కాదు",
+    "answerLabel": "బయటకు వెళ్లడానికి అనుకూలమైన మరియు నివారించాల్సిన సమయాలు",
+    "bestAnswer": "బయటకు వెళ్లడానికి ఉత్తమ సమయం: {{window}}",
+    "avoidAnswer": "నివారించడం మంచిది: {{window}} (తదుపరి 24 గంటల్లో {{category}} గాలి ఉండవచ్చు)",
+    "notAvailable": "అందుబాటులో లేదు",
+    "today": "ఈరోజు",
+    "tomorrow": "రేపు",
+    "daysLabel": "రోజులోని సమయాన్ని బట్టి గాలి నాణ్యత",
+    "periods": {
+      "morning": "ఉదయం (6 AM-12 PM)",
+      "afternoon": "మధ్యాహ్నం (12-6 PM)",
+      "evening": "సాయంత్రం (6 PM-12 AM)",
+      "night": "రాత్రి (12-6 AM)"
+    },
+    "averageAqi": "సగటు AQI {{value}}",
+    "chartLabel": "గత మరియు అంచనా AQI",
+    "observedLegend": "గత 24 గంటలు",
+    "aiLegend": "AirGuard AI అంచనా",
+    "chartCaption": "సూటి గీత: ఈరోజు ఇప్పటివరకు. డాష్ గీత: అంచనా.",
+    "reliabilityTitle": "ఇది ఎంతవరకు నమ్మదగినది?",
+    "typicalError": "మా అంచనా సాధారణంగా సుమారు {{value}} AQI పాయింట్లు తేడాతో ఉంటుంది.",
+    "comparisons": "ఇప్పటి గాలి అలాగే ఉంటుందని అనుకుంటే లోపం {{baseline}} AQI పాయింట్లు. వాతావరణ నమూనా MAE: {{atmospheric}}।",
+    "atmosphericUnavailable": "మూల్యాంకన డేటాలో అందుబాటులో లేదు",
+    "testPeriod": "పరీక్ష కాలం: {{start}} నుంచి {{end}}.",
+    "doesNotBeat": "మా నమూనా సరళ ఆధార అంచనాల కంటే మెరుగైనది కాదు.",
+    "evaluationUnavailable": "మూల్యాంకన ఫలితాలు ప్రస్తుతం అందుబాటులో లేవు."
+  },
   "alerts": {
     "highAqiTitle": "ఇప్పుడు గాలి కాలుష్యం ఎక్కువగా ఉంది",
     "highAqiMessage": "{{place}}లో ఇప్పుడు గాలి {{category}}గా ఉంది (AQI {{value}}).",

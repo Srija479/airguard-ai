@@ -16,12 +16,17 @@ import type { AqiCategory } from '../hooks/useAqi'
 import { getAdviceKey } from '../lib/advice'
 
 type ForecastPoint = { time: string; aqi: number; category: AqiCategory }
-type ForecastMetrics = {
-  test: Record<string, { mae: number; rmse: number }>
+type ForecastEvaluation = {
+  status: 'ready' | 'not_ready'
+  model: { mae: number; rmse: number }
+  persistence: { mae: number; rmse: number }
+  same_hour_yesterday: { mae: number; rmse: number }
   test_start: string
   test_end: string
+  test_rows: number
   selected_model: string
   beats_baseline: boolean
+  mae_by_horizon: Record<string, number | null>
 }
 type ForecastResponse = {
   status: 'ready' | 'training' | 'not_ready'
@@ -30,13 +35,11 @@ type ForecastResponse = {
   observed?: ForecastPoint[]
   best_window?: { start: string; end: string } | null
   worst_window?: { start: string; end: string } | null
-  metrics?: ForecastMetrics
 }
 type ChartPoint = {
-  time: string
+  time: number
   observed: number | null
   ai: number | null
-  atmospheric: number | null
 }
 
 const categoryColors: Record<AqiCategory, string> = {
@@ -48,8 +51,25 @@ const categoryColors: Record<AqiCategory, string> = {
   severe: '#7f1d1d',
 }
 
-function timestamp(value: string) {
-  return new Date(value).toLocaleString([], { weekday: 'short', hour: 'numeric' })
+const categoryOrder: AqiCategory[] = ['good', 'satisfactory', 'moderate', 'poor', 'veryPoor', 'severe']
+const periods = [
+  { key: 'morning', startHour: 6, endHour: 12 },
+  { key: 'afternoon', startHour: 12, endHour: 18 },
+  { key: 'evening', startHour: 18, endHour: 24 },
+  { key: 'night', startHour: 0, endHour: 6 },
+] as const
+
+function dateKey(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+}
+
+function categoryForAverage(aqi: number): AqiCategory {
+  if (aqi <= 50) return 'good'
+  if (aqi <= 100) return 'satisfactory'
+  if (aqi <= 200) return 'moderate'
+  if (aqi <= 300) return 'poor'
+  if (aqi <= 400) return 'veryPoor'
+  return 'severe'
 }
 
 function buildChartData(data: ForecastResponse): ChartPoint[] {
@@ -57,27 +77,31 @@ function buildChartData(data: ForecastResponse): ChartPoint[] {
   for (const [key, values] of [
     ['observed', data.observed ?? []],
     ['ai', data.ai ?? []],
-    ['atmospheric', data.atmospheric ?? []],
   ] as const) {
     for (const point of values) {
-      const entry = points.get(point.time) ?? { time: point.time, observed: null, ai: null, atmospheric: null }
-      entry[key] = point.aqi
+      const entry = points.get(point.time) ?? {
+        time: new Date(point.time).getTime(),
+        observed: null,
+        ai: null,
+      }
+      if (key === 'observed') entry.observed = point.aqi
+      else entry.ai = point.aqi
       points.set(point.time, entry)
     }
   }
-  return [...points.values()].sort((left, right) => left.time.localeCompare(right.time))
+  return [...points.values()].sort((left, right) => left.time - right.time)
 }
 
 export default function ForecastPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { location } = useLocation()
   const { profile } = useProfile()
   const [forecast, setForecast] = useState<ForecastResponse | null>(null)
+  const [evaluation, setEvaluation] = useState<ForecastEvaluation | null>(null)
   const [loading, setLoading] = useState(true)
   const [training, setTraining] = useState(false)
   const [error, setError] = useState(false)
   const [retry, setRetry] = useState(0)
-  const [selectedTimeline, setSelectedTimeline] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -86,6 +110,7 @@ export default function ForecastPage() {
     setTraining(false)
     setError(false)
     setForecast(null)
+    setEvaluation(null)
 
     const params = { lat: location.lat, lon: location.lon }
     const fetchForecast = async () => {
@@ -96,6 +121,12 @@ export default function ForecastPage() {
           setForecast(data)
           setTraining(false)
           setLoading(false)
+          try {
+            const evaluationResult = await axios.get<ForecastEvaluation>('/api/forecast/evaluation', { params })
+            if (!cancelled && evaluationResult.data.status === 'ready') setEvaluation(evaluationResult.data)
+          } catch {
+            if (!cancelled) setEvaluation(null)
+          }
           if (interval) window.clearInterval(interval)
           return
         }
@@ -141,28 +172,51 @@ export default function ForecastPage() {
   }, [location.lat, location.lon, retry])
 
   const aiPoints = forecast?.ai ?? []
-  const groups: ForecastPoint[][] = []
-  for (let index = 0; index < aiPoints.length; index += 3) {
-    groups.push(aiPoints.slice(index, index + 3))
-  }
-  const timeline = groups.map((points) => {
-    const average = points.reduce((sum, point) => sum + point.aqi, 0) / points.length
-    const category = points[Math.floor(points.length / 2)]?.category ?? points[0].category
-    const start = points[0].time
-    const end = points.at(-1)?.time ?? start
-    const inBest = Boolean(forecast?.best_window && start <= forecast.best_window.end && end >= forecast.best_window.start)
-    const inWorst = Boolean(forecast?.worst_window && start <= forecast.worst_window.end && end >= forecast.worst_window.start)
-    return { start, end, average, category, inBest, inWorst }
-  })
   const chartData = forecast ? buildChartData(forecast) : []
-  const firstHigh = aiPoints.find((point) => point.aqi >= 201)
-  const lastHigh = firstHigh
-    ? aiPoints.filter((point) => point.category === firstHigh.category).at(-1)
-    : null
-  const summary = firstHigh
-    ? t('forecast.highSummary', { category: t(`aqi.${firstHigh.category}`), start: timestamp(firstHigh.time), end: lastHigh ? timestamp(lastHigh.time) : timestamp(firstHigh.time) })
-    : t('forecast.steadySummary', { category: t(`aqi.${aiPoints[0]?.category ?? 'good'}`) })
   const adviceCategory = aiPoints[0]?.category
+  const worstNextDay = aiPoints
+    .filter((point) => new Date(point.time).getTime() <= Date.now() + 24 * 60 * 60 * 1000)
+    .reduce<ForecastPoint | null>((worst, point) => {
+      if (!worst || categoryOrder.indexOf(point.category) > categoryOrder.indexOf(worst.category)) return point
+      return worst
+    }, null)
+  const locale = i18n.language === 'hi' ? 'hi-IN' : i18n.language === 'te' ? 'te-IN' : 'en-IN'
+  const formatTime = (value: string | number) => new Date(value).toLocaleTimeString(locale, { hour: 'numeric' })
+  const formatWeekday = (date: Date) => date.toLocaleDateString(locale, { weekday: 'short' })
+  const formatDay = (value: string) => {
+    const date = new Date(value)
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(today.getDate() + 1)
+    if (dateKey(date) === dateKey(today)) return t('forecastPage.today')
+    if (dateKey(date) === dateKey(tomorrow)) return t('forecastPage.tomorrow')
+    return date.toLocaleDateString(locale, { weekday: 'long' })
+  }
+  const formatWindow = (window: ForecastResponse['best_window']) => window
+    ? `${formatDay(window.start)} ${formatTime(window.start)}-${formatTime(window.end)}`
+    : t('forecastPage.notAvailable')
+  const firstDay = new Date()
+  firstDay.setHours(0, 0, 0, 0)
+  const dayBuckets = [0, 1].map((offset) => {
+    const date = new Date(firstDay)
+    date.setDate(firstDay.getDate() + offset)
+    const dayPoints = aiPoints.filter((point) => dateKey(new Date(point.time)) === dateKey(date))
+    const slices = periods.map((period) => {
+      const points = dayPoints.filter((point) => {
+        const hour = new Date(point.time).getHours()
+        return hour >= period.startHour && hour < period.endHour
+      })
+      if (points.length === 0) return { ...period, average: null, category: null }
+      const average = points.reduce((sum, point) => sum + point.aqi, 0) / points.length
+      const category = categoryForAverage(average)
+      return { ...period, average, category }
+    })
+    return { date, slices }
+  })
+  const chartStart = chartData.length ? Math.ceil(chartData[0].time / (12 * 60 * 60 * 1000)) * 12 * 60 * 60 * 1000 : 0
+  const chartEnd = chartData.at(-1)?.time ?? 0
+  const chartTicks: number[] = []
+  for (let tick = chartStart; tick <= chartEnd; tick += 12 * 60 * 60 * 1000) chartTicks.push(tick)
 
   if (loading || training) {
     return (
@@ -177,7 +231,7 @@ export default function ForecastPage() {
     )
   }
 
-  if (error || !forecast || !forecast.metrics) {
+  if (error || !forecast) {
     return (
       <div className="max-w-3xl space-y-4">
         <h1 className="text-2xl font-semibold text-stone-950">{t('pages.forecast.title')}</h1>
@@ -192,68 +246,73 @@ export default function ForecastPage() {
   return (
     <div className="max-w-5xl space-y-6">
       <h1 className="text-2xl font-semibold text-stone-950">{t('pages.forecast.title')}</h1>
-      <p className="text-xs font-medium text-stone-600">{t('forecast.notMeasurement')}</p>
-      <p className="text-lg font-semibold text-stone-950">{summary}</p>
+      <p className="text-xs font-medium text-stone-600">{t('forecastPage.notMeasurement')}</p>
+      <section aria-label={t('forecastPage.answerLabel')} className="space-y-2 border-b border-stone-300 pb-5">
+        <p className="text-2xl font-semibold text-stone-950">{t('forecastPage.bestAnswer', { window: formatWindow(forecast.best_window) })}</p>
+        <p className="text-2xl font-semibold text-stone-950">{t('forecastPage.avoidAnswer', {
+          window: formatWindow(forecast.worst_window),
+          category: worstNextDay ? t(`aqi.${worstNextDay.category}`) : t('forecastPage.notAvailable'),
+        })}</p>
+      </section>
       {adviceCategory && <p className="text-sm text-stone-700">{t(getAdviceKey(adviceCategory, profile))}</p>}
 
-      <section aria-label={t('forecast.timelineLabel')} className="space-y-3">
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-stone-700">
-          <span>{t('forecast.bestWindow')}</span>
-          <span>{t('forecast.worstWindow')}</span>
-        </div>
-        <div className="grid grid-cols-4 gap-1 sm:grid-cols-8 lg:grid-cols-16">
-          {timeline.map((block) => (
-            <button
-              key={block.start}
-              type="button"
-              onClick={() => setSelectedTimeline(block.start)}
-              title={`${timestamp(block.start)}: ${t(`aqi.${block.category}`)}`}
-              aria-label={`${timestamp(block.start)}: ${t(`aqi.${block.category}`)}${block.inBest ? `, ${t('forecast.bestWindow')}` : ''}${block.inWorst ? `, ${t('forecast.worstWindow')}` : ''}`}
-              className={`min-h-12 border px-1 text-[10px] font-medium text-white ${block.inBest ? 'ring-2 ring-stone-900' : ''} ${block.inWorst ? 'outline outline-2 outline-offset-1 outline-aqi-poor' : ''}`}
-              style={{ backgroundColor: categoryColors[block.category] }}
-            >
-              {timestamp(block.start).split(', ').at(-1)}
-            </button>
-          ))}
-        </div>
-        {selectedTimeline && timeline.find((block) => block.start === selectedTimeline) && (
-          <p role="status" className="text-sm text-stone-700">
-            {t('forecast.timelineDetail', {
-              time: timestamp(selectedTimeline),
-              category: t(`aqi.${timeline.find((block) => block.start === selectedTimeline)?.category}`),
-              aqi: Math.round(timeline.find((block) => block.start === selectedTimeline)?.average ?? 0),
-            })}
-          </p>
-        )}
+      <section aria-label={t('forecastPage.daysLabel')} className="space-y-4">
+        {dayBuckets.map((day) => (
+          <div key={dateKey(day.date)} className="border-b border-stone-200 pb-4">
+            <h2 className="mb-3 text-base font-semibold text-stone-900">
+              {dateKey(day.date) === dateKey(new Date()) ? t('forecastPage.today') : dateKey(day.date) === dateKey(new Date(Date.now() + 24 * 60 * 60 * 1000)) ? t('forecastPage.tomorrow') : day.date.toLocaleDateString(locale, { weekday: 'long' })}
+            </h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 md:grid-cols-4">
+              {day.slices.map((slice) => (
+                <div key={slice.key} className="space-y-1.5">
+                  <h3 className="text-sm font-medium text-stone-800">{t(`forecastPage.periods.${slice.key}`)}</h3>
+                  <div className="h-2 w-full" style={{ backgroundColor: slice.category ? categoryColors[slice.category] : '#e7e5e4' }} />
+                  <p className="text-sm text-stone-800">
+                    {slice.category ? t(`aqi.${slice.category}`) : t('forecastPage.notAvailable')}
+                    <span className="ml-2 text-xs text-stone-600">{t('forecastPage.averageAqi', { value: slice.average === null ? '—' : Math.round(slice.average) })}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
-      <section aria-label={t('forecast.chartLabel')} className="space-y-3">
+      <section aria-label={t('forecastPage.chartLabel')} className="space-y-3">
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-700">
-          <span className="inline-flex items-center gap-2"><i className="h-0.5 w-6 bg-stone-800" />{t('forecast.observedLegend')}</span>
-          <span className="inline-flex items-center gap-2"><i className="h-0 w-6 border-t-2 border-dashed border-brand-blue" />{t('forecast.aiLegend')}</span>
-          <span className="inline-flex items-center gap-2"><i className="h-px w-6 bg-stone-400" />{t('forecast.atmosphericLegend')}</span>
+          <span className="inline-flex items-center gap-2"><i className="h-0.5 w-6 bg-stone-800" />{t('forecastPage.observedLegend')}</span>
+          <span className="inline-flex items-center gap-2"><i className="h-0 w-6 border-t-2 border-dashed border-brand-blue" />{t('forecastPage.aiLegend')}</span>
         </div>
-        <div role="img" aria-label={t('forecast.chartLabel')} className="h-64 w-full">
+        <div role="img" aria-label={t('forecastPage.chartLabel')} className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid vertical={false} stroke="#d6d3d1" />
-              <XAxis dataKey="time" tickFormatter={(value: string) => value.slice(11, 16)} tick={{ fill: '#57534e', fontSize: 11 }} axisLine={{ stroke: '#a8a29e' }} tickLine={false} minTickGap={28} />
+              <XAxis type="number" dataKey="time" domain={['dataMin', 'dataMax']} ticks={chartTicks} tickFormatter={(value: number) => `${formatWeekday(new Date(value))} ${formatTime(value)}`} tick={{ fill: '#57534e', fontSize: 11 }} axisLine={{ stroke: '#a8a29e' }} tickLine={false} />
               <YAxis width={36} tick={{ fill: '#57534e', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip labelFormatter={(value) => timestamp(String(value))} contentStyle={{ border: '1px solid #d6d3d1', borderRadius: 2, boxShadow: 'none' }} />
-              <Line type="linear" dataKey="observed" name={t('forecast.observedLegend')} stroke="#292524" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
-              <Line type="linear" dataKey="ai" name={t('forecast.aiLegend')} stroke="#1d4ed8" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
-              <Line type="linear" dataKey="atmospheric" name={t('forecast.atmosphericLegend')} stroke="#a8a29e" strokeWidth={1} dot={false} connectNulls={false} isAnimationActive={false} />
+              <Tooltip labelFormatter={(value) => `${formatWeekday(new Date(Number(value)))} ${formatTime(Number(value))}`} contentStyle={{ border: '1px solid #d6d3d1', borderRadius: 2, boxShadow: 'none' }} />
+              <Line type="linear" dataKey="observed" name={t('forecastPage.observedLegend')} stroke="#292524" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
+              <Line type="linear" dataKey="ai" name={t('forecastPage.aiLegend')} stroke="#1d4ed8" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
+        <p className="text-xs text-stone-600">{t('forecastPage.chartCaption')}</p>
       </section>
 
       <details className="border-y border-stone-300">
-        <summary className="flex min-h-12 cursor-pointer items-center py-3 font-semibold text-stone-900">{t('forecast.reliabilityTitle')}</summary>
+        <summary className="flex min-h-12 cursor-pointer items-center py-3 font-semibold text-stone-900">{t('forecastPage.reliabilityTitle')}</summary>
         <div className="space-y-2 pb-4 text-sm text-stone-700">
-          <p>{t('forecast.errorComparison', { model: forecast.metrics.test.model.mae.toFixed(1), baseline: forecast.metrics.test.persistence.mae.toFixed(1), start: forecast.metrics.test_start.slice(0, 10), end: forecast.metrics.test_end.slice(0, 10) })}</p>
-          {!forecast.metrics.beats_baseline && <p>{t('forecast.doesNotBeat')}</p>}
-          <p>{t('forecast.reliabilityNote')}</p>
+          {evaluation ? (
+            <>
+              <p>{t('forecastPage.typicalError', { value: evaluation.model.mae.toFixed(1) })}</p>
+              <p>{t('forecastPage.comparisons', {
+                model: evaluation.model.mae.toFixed(1),
+                baseline: evaluation.persistence.mae.toFixed(1),
+                atmospheric: t('forecastPage.atmosphericUnavailable'),
+              })}</p>
+              <p>{t('forecastPage.testPeriod', { start: evaluation.test_start.slice(0, 10), end: evaluation.test_end.slice(0, 10) })}</p>
+              {!evaluation.beats_baseline && <p>{t('forecastPage.doesNotBeat')}</p>}
+            </>
+          ) : <p>{t('forecastPage.evaluationUnavailable')}</p>}
         </div>
       </details>
     </div>

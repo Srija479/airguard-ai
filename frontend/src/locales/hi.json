@@ -50,6 +50,34 @@
     "doesNotBeat": "हमारा मॉडल 'अभी जैसी हवा' वाले सरल अनुमान से बेहतर नहीं है।",
     "reliabilityNote": "यह इस शहर के मॉडल किए गए डेटा से सीखता है। आगे के पूर्वानुमान कम निश्चित होते हैं।"
   },
+  "forecastPage": {
+    "notMeasurement": "पूर्वानुमान, माप नहीं",
+    "answerLabel": "बाहर जाने का बेहतर और खराब समय",
+    "bestAnswer": "बाहर जाने का सबसे अच्छा समय: {{window}}",
+    "avoidAnswer": "बाहर जाने से बचें: {{window}} (अगले 24 घंटों में {{category}} हवा की संभावना)",
+    "notAvailable": "उपलब्ध नहीं",
+    "today": "आज",
+    "tomorrow": "कल",
+    "daysLabel": "दिन के समय के अनुसार वायु गुणवत्ता",
+    "periods": {
+      "morning": "सुबह (6 AM-12 PM)",
+      "afternoon": "दोपहर (12-6 PM)",
+      "evening": "शाम (6 PM-12 AM)",
+      "night": "रात (12-6 AM)"
+    },
+    "averageAqi": "औसत AQI {{value}}",
+    "chartLabel": "पिछला और अनुमानित AQI",
+    "observedLegend": "पिछले 24 घंटे",
+    "aiLegend": "AirGuard AI पूर्वानुमान",
+    "chartCaption": "ठोस रेखा: आज अब तक। टूटी रेखा: पूर्वानुमान।",
+    "reliabilityTitle": "यह कितना भरोसेमंद है?",
+    "typicalError": "हमारा पूर्वानुमान आम तौर पर लगभग {{value}} AQI अंकों से चूकता है।",
+    "comparisons": "अभी की हवा जैसी मानने पर त्रुटि {{baseline}} AQI अंक थी। वायुमंडलीय मॉडल की MAE: {{atmospheric}}।",
+    "atmosphericUnavailable": "मूल्यांकन डेटा में उपलब्ध नहीं",
+    "testPeriod": "परीक्षण अवधि: {{start}} से {{end}}।",
+    "doesNotBeat": "हमारा मॉडल सरल आधार अनुमानों से बेहतर नहीं है।",
+    "evaluationUnavailable": "मूल्यांकन के परिणाम अभी उपलब्ध नहीं हैं।"
+  },
   "alerts": {
     "highAqiTitle": "अभी वायु प्रदूषण अधिक है",
     "highAqiMessage": "{{place}} में अभी हवा {{category}} है (AQI {{value}})।",
