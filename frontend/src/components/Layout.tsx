@@ -116,7 +116,9 @@ export default function Layout() {
       <footer className="border-t border-stone-300 bg-white px-4 py-4 text-center text-sm text-stone-600 md:px-6">
         <div className="mx-auto max-w-6xl space-y-2">
           <div>{t('footer.attribution')}</div>
-          <Link to="/officer" className="text-xs text-stone-600 underline underline-offset-2">{t('footer.officerLogin')}</Link>
+          {import.meta.env.VITE_ENABLE_OFFICER_LINK === 'true' && (
+            <Link to="/officer" className="text-xs text-stone-600 underline underline-offset-2">{t('footer.officerLogin')}</Link>
+          )}
         </div>
       </footer>
 
